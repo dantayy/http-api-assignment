@@ -3,7 +3,7 @@ const http = require('http'); // pull in http module
 const url = require('url');
 // querystring module for parsing querystrings from url
 const query = require('querystring');
-// pull in our custom files
+// pull in our custom file
 const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -27,6 +27,7 @@ const urlStruct = {
   notFound: responseHandler.notFound,
 };
 
+// when a call is made to this server run this
 const onRequest = (request, response) => {
   // parse the url using the url module
   // This will let us grab any section of the URL by name
@@ -48,6 +49,7 @@ const onRequest = (request, response) => {
   }
 };
 
+// create a server that runs the onRequest function when pinged and listens at the specified port
 http.createServer(onRequest).listen(port);
 
 console.log(`Listening on 127.0.0.1: ${port}`);

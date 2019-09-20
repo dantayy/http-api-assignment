@@ -1,23 +1,27 @@
 const fs = require('fs'); // pull in the file system module
 
+// vars for the html and css the client needs
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
+// object in memory used by the server to send messages and error ids back to the client
 const returnObj = {};
 
+// returns the base page for the client
 const getIndex = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/html' });
   response.write(index);
   response.end();
 };
 
+// returns the specified css for the client
 const getCSS = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/css' });
   response.write(css);
   response.end();
 };
 
-// function to respond with
+// function to respond to json and xml requests with
 // takes request, response, status code, and content type
 const respond = (request, response, status, type) => {
   let returnStr; // var to write out in the response
@@ -27,8 +31,9 @@ const respond = (request, response, status, type) => {
     returnStr = `${returnStr} <message>${returnObj.message}</message>`;
     if (status !== 200) { returnStr = `${returnStr} <id>${returnObj.id}</id>`; }
     returnStr = `${returnStr} </response>`;
+  } else { // for json type
+    returnStr = JSON.stringify(returnObj);
   }
-  returnStr = JSON.stringify(returnObj);
 
   response.writeHead(status, { 'Content-Type': type });
   response.write(returnStr);

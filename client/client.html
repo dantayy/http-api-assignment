@@ -13,7 +13,8 @@ const handleResponse = (xhr) => {
     //Again, the server can ignore our requested types.
     const type = xhr.getResponseHeader('content-type');
     
-    console.log(xhr.response);
+    //log the response sent back from the server
+    console.log(xhr.response); 
 
     //grab the content section
     const content = document.querySelector("#content");
@@ -31,7 +32,7 @@ const handleResponse = (xhr) => {
         p.textContent = `Message: ${obj.message}`;
     } //if response was in xml
     else if (type === 'text/xml') {
-        //grab the name tag and age tag from our responseXML
+        //grab the message tag from our responseXML
         //This will only work if the responding XML is completely valid.
         //Otherwise the responseXML field will be null
         const message = xhr.responseXML.querySelector('message').textContent;
@@ -40,7 +41,7 @@ const handleResponse = (xhr) => {
         p.textContent = `Message: ${message}`;
     }
 
-    //append the h1 and p to the content.
+    //apply text to the h1 based on the status code
     switch(xhr.status) {
         case 200: //success
             h1.innerHTML = `<b>Success</b>`;
@@ -51,16 +52,16 @@ const handleResponse = (xhr) => {
         case 401: //unauthorized 
             h1.innerHTML = `<b>Unauthorized</b>`;
             break;
-        case 403: //unauthorized 
+        case 403: //forbidden 
             h1.innerHTML = `<b>Forbidden</b>`;
             break;
         case 404: //not found (requested resource does not exist)
             h1.innerHTML = `<b>Resource Not Found</b>`;
             break;
-        case 500: //not found (requested resource does not exist)
+        case 500: //internal server error
             h1.innerHTML = `<b>Internal Server Error</b>`;
             break;
-        case 501: //not found (requested resource does not exist)
+        case 501: //not implemented
             h1.innerHTML = `<b>Not Implemented</b>`;
             break;
         default: //default other errors we are not handling in this example
@@ -68,6 +69,7 @@ const handleResponse = (xhr) => {
             break;
     }
     
+    //append the h1 and p to the content.
     content.appendChild(h1);
     content.appendChild(p);
 };
@@ -91,17 +93,19 @@ const sendAjax = (url, acceptedType) => {
 
 const init = () => {
 
+    //grab the relevent items from the page and start listening to them
     const typeSelect = document.querySelector("#type");
     const pageSelect = document.querySelector("#page");
     const sendButton = document.querySelector("#send");
 
-    //functions to call sendAjax for us with the correct parameters
+    //function to call sendAjax for us with the correct parameters
     const sendAcceptedType = () => sendAjax(pageSelect.value, typeSelect.value);
 
-    //attach the correct functions to the correct events
+    //attach the correct function to the correct event
     sendButton.addEventListener('click', sendAcceptedType);
 };
 
+//load the init function when the page loads
 window.onload = init;
         </script>
     </head>
